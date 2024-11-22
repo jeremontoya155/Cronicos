@@ -1,7 +1,7 @@
 const express = require('express');
 const { Pool } = require('pg');
 const moment = require('moment');
-require('dotenv').config(); // Cargar variables de entorno desde el archivo .env
+
 // Configurar la conexión a PostgreSQL
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,

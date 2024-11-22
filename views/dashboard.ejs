@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Dashboard</title>
+</head>
+<body>
+  <h1>Bienvenido, <%= user.user %></h1>
+  <% if (error) { %>
+    <p style="color: red;"><%= error %></p>
+  <% } %>
+  <form action="/data/filter" method="POST">
+    <label for="startDate">Fecha de inicio:</label>
+    <input type="date" name="startDate" />
+    <label for="endDate">Fecha de fin:</label>
+    <input type="date" name="endDate" />
+    <label for="person">Nombre:</label>
+    <input type="text" name="person" placeholder="Nombre del afiliado" />
+    <button type="submit">Filtrar</button>
+  </form>
+
+  <% if (data && data.length > 0) { %>
+    <table border="1">
+      <thead>
+        <tr>
+          <% headers.forEach(header => { %>
+            <th><%= header %></th>
+          <% }) %>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% data.forEach(row => { %>
+          <tr>
+            <% headers.forEach(header => { %>
+              <td style="background-color: <%= header === 'estado_contacto' && row.estado_contacto === 'Pendiente' ? 'red' : 'white' %>;">
+                <% if (header === 'notas') { %>
+                  <form action="/data/update" method="POST" style="display:inline;">
+                    <input type="hidden" name="id" value="<%= row.id %>" />
+                    <textarea name="notas"><%= row[header] %></textarea>
+                    <button type="submit">Guardar</button>
+                  </form>
+                <% } else { %>
+                  <%= row[header] || '' %>
+                <% } %>
+              </td>
+            <% }) %>
+            <td>
+              <form action="/data/update" method="POST" style="display:inline;">
+                <input type="hidden" name="id" value="<%= row.id %>" />
+                <input type="hidden" name="estado_contacto" value="<%= row.estado_contacto === 'Pendiente' ? 'Contactado' : 'Pendiente' %>" />
+                <button type="submit"><%= row.estado_contacto === 'Pendiente' ? 'Marcar Contactado' : 'Marcar Pendiente' %></button>
+              </form>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  <% } else { %>
+    <p>No hay datos disponibles.</p>
+  <% } %>
+
+  <a href="/auth/logout">Cerrar Sesión</a>
+</body>
+</html>

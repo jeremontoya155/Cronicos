@@ -8,6 +8,10 @@ require('dotenv').config();
 const app = express();
 const port = process.env.PORT;
 
+
+// Configurar carpeta `public` para servir archivos estáticos
+app.use(express.static(path.join(__dirname, 'public')));
+
 // Configuración de sesión
 app.use(session({
     secret: 'secret',

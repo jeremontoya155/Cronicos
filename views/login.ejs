@@ -3,16 +3,19 @@
 <head>
     <title>Login</title>
     <link rel="stylesheet" href="/css/global.css">
+    <link rel="stylesheet" href="/css/login.css">
 </head>
 <body>
-    <h1>Login</h1>
-    <% if (typeof error !== 'undefined') { %>
-        <p style="color: red;"><%= error %></p>
-    <% } %>
-    <form method="POST" action="/auth/login">
-        <input type="text" name="user" placeholder="Username" required>
-        <input type="password" name="password" placeholder="Password" required>
-        <button type="submit">Login</button>
-    </form>
+    <div class="login-container">
+        <h1>Login</h1>
+        <% if (typeof error !== 'undefined') { %>
+            <p><%= error %></p>
+        <% } %>
+        <form method="POST" action="/auth/login">
+            <input type="text" name="user" placeholder="Username" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <button type="submit">Login</button>
+        </form>
+    </div>
 </body>
 </html>

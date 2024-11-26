@@ -7,60 +7,201 @@
 </head>
 <body>
   <h1>Bienvenido, <%= user.user %></h1>
-  <% if (error) { %>
-    <p style="color: red;"><%= error %></p>
-  <% } %>
-  <form action="/data/filter" method="POST">
-    <label for="startDate">Fecha de inicio:</label>
-    <input type="date" name="startDate" />
-    <label for="endDate">Fecha de fin:</label>
-    <input type="date" name="endDate" />
-    <label for="person">Nombre:</label>
-    <input type="text" name="person" placeholder="Nombre del afiliado" />
-    <button type="submit">Filtrar</button>
-  </form>
+
+  <div class="filter-container">
+    <% if (error) { %>
+      <div class="error-message">
+        <%= error %>
+      </div>
+    <% } %>
+    
+    <form action="/data/filter" method="POST" class="filter-form">
+      <div class="form-group">
+        <label for="startDate">Fecha de inicio:</label>
+        <input type="date" id="startDate" name="startDate" />
+      </div>
+      
+      <div class="form-group">
+        <label for="endDate">Fecha de fin:</label>
+        <input type="date" id="endDate" name="endDate" />
+      </div>
+      
+      <div class="form-group">
+        <label for="person">Nombre:</label>
+        <input type="text" id="person" name="person" placeholder="Nombre del afiliado" />
+      </div>
+      
+      <button type="submit" class="filter-button">Filtrar</button>
+    </form>
+  </div>
 
   <% if (data && data.length > 0) { %>
-    <table border="1">
-      <thead>
-        <tr>
-          <% headers.forEach(header => { %>
-            <th><%= header %></th>
-          <% }) %>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
+    <div class="informacion">
+      <div class="headers">
+        <p class="contact-cell">Afiliado</p>
+        <p class="contact-cell">Fecha Alerta</p>
+        <p class="contact-cell">Sucursal</p>
+        <p class="contact-cell">Legajo Carga</p>
+        <p class="contact-cell">Estado Contacto</p>
+        <p class="contact-cell">Acciones</p>
+      </div>
+          
+      <div class="bodyInfo">
         <% data.forEach(row => { %>
-          <tr>
-            <% headers.forEach(header => { %>
-              <td style="background-color: <%= header === 'estado_contacto' && row.estado_contacto === 'Pendiente' ? 'red' : 'white' %>;">
-                <% if (header === 'notas') { %>
-                  <form action="/data/update" method="POST" style="display:inline;">
-                    <input type="hidden" name="id" value="<%= row.id %>" />
-                    <textarea name="notas"><%= row[header] %></textarea>
-                    <button type="submit">Guardar</button>
-                  </form>
-                <% } else { %>
-                  <%= row[header] || '' %>
-                <% } %>
-              </td>
-            <% }) %>
-            <td>
+          <div class="bodyRow" onclick="toggleRow(this)">
+            <!-- Afiliado -->
+            <div class="contact-cell cell-afiliado">
+              <span class="cell-content">
+                <%= row.afiliado || '—' %>
+              </span>
+            </div>
+
+            <!-- Fecha Alerta -->
+            <div class="contact-cell cell-fecha">
+              <span class="cell-content">
+                <%= row.fecha_alerta || '—' %>
+              </span>
+            </div>
+
+            <!-- Sucursal -->
+            <div class="contact-cell cell-sucursal">
+              <span class="cell-content">
+                <%= row.sucursal || '—' %>
+              </span>
+            </div>
+
+            <!-- Legajo Carga -->
+            <div class="contact-cell cell-legajo">
+              <span class="cell-content">
+                <%= row.legajo_carga || '—' %>
+              </span>
+            </div>
+
+
+            <!-- Estado Contacto -->
+            <div class="contact-cell cell-estado-contacto <%= row.estado_contacto === 'Pendiente' ? 'pending-status' : '' %>">
+              <span class="cell-content">
+                <%= row.estado_contacto || '—' %>
+              </span>
+            </div>
+
+            <!-- Botón de actualización -->
+            <div class="contact-cell cell-actions">
               <form action="/data/update" method="POST" style="display:inline;">
                 <input type="hidden" name="id" value="<%= row.id %>" />
                 <input type="hidden" name="estado_contacto" value="<%= row.estado_contacto === 'Pendiente' ? 'Contactado' : 'Pendiente' %>" />
-                <button type="submit"><%= row.estado_contacto === 'Pendiente' ? 'Marcar Contactado' : 'Marcar Pendiente' %></button>
+                <button type="submit">
+                  <%= row.estado_contacto === 'Pendiente' ? 'Marcar Contactado' : 'Marcar Pendiente' %>
+                </button>
               </form>
-            </td>
-          </tr>
+            </div>
+          </div>
+          <div class="bodyRowHidden">
+            <div class="hidden-content">
+              <!-- Marca Temporal -->
+              <div class="hidden-field">
+                <span class="hidden-field-label">Marca Temporal:</span>
+                <span class="hidden-field-value"><%= row.marca_temporal || '—' %></span>
+              </div>
+      
+              <!-- DNI Afiliado -->
+              <div class="hidden-field">
+                <span class="hidden-field-label">DNI Afiliado:</span>
+                <span class="hidden-field-value"><%= row.dni_afiliado || '—' %></span>
+              </div>
+              <!-- Telefono afiliado -->
+              <div class="hidden-field">
+                <span class="hidden-field-label">Telefono afiliado:</span>
+                <span class="hidden-field-value"><%= row.telefono_afiliado || '—' %></span>
+              </div>
+      
+              <!-- Tercero Interviniente -->
+              <div class="hidden-field">
+                <span class="hidden-field-label">Tercero Interviniente:</span>
+                <span class="hidden-field-value"><%= row.tercero_interviniente || '—' %></span>
+              </div>
+              <div class="hidden-field">
+                <span class="hidden-field-label">Correo Tercero:</span>
+                <span class="hidden-field-value"><%= row.correo_tercero || '—' %></span>
+              </div>
+              <div class="hidden-field">
+                <span class="hidden-field-label">Obra Social:</span>
+                <span class="hidden-field-value"><%= row.obra_social || '—' %></span>
+              </div>
+              <div class="hidden-field hiddenfield-notas">
+                <form action="/data/update" method="POST" style="display:inline;">
+                  <input type="hidden" name="id" value="<%= row.id %>" />
+                  <textarea name="notas"><%= row.notas %></textarea>
+                  <button type="submit">Guardar</button>
+                </form>
+              </div>
+              <div class="hidden-field">
+                <span class="hidden-field-label">Productos:</span>
+                <span class="hidden-field-value"><%= row.productos || '—' %></span>
+              </div>
+              <div class="hidden-field">
+                <span class="hidden-field-label">Nro Afiliado:</span>
+                <span class="hidden-field-value"><%= row.numero_afiliado || '—' %></span>
+              </div>
+              <div class="hidden-field">
+                <span class="hidden-field-label">Tipo de Productos:</span>
+                <span class="hidden-field-value"><%= row.tipo_productos || '—' %></span>
+              </div>
+              <div class="hidden-field">
+                <span class="hidden-field-label">Grupo:</span>
+                <span class="hidden-field-value"><%= row.grupo || '—' %></span>
+              </div>
+              <div class="hidden-field">
+                <span class="hidden-field-label">Fecha venta:</span>
+                <span class="hidden-field-value"><%= row.fecha_venta || '—' %></span>
+              </div>
+              <div class="hidden-field">
+                <span class="hidden-field-label">Estado:</span>
+                <span class="hidden-field-value"><%= row.estado || '—' %></span>
+              </div>
+
+            </div>
+          </div>
         <% }) %>
-      </tbody>
-    </table>
+      </div>
+    </div>
+    
+    
   <% } else { %>
     <p>No hay datos disponibles.</p>
   <% } %>
+  
 
   <a href="/auth/logout">Cerrar Sesión</a>
+
+
+  <script>
+    function getCellClassName(header, row) {
+      const classes = [];
+      
+      if (header === 'estado_contacto' && row.estado_contacto === 'Pendiente') {
+        classes.push('pending-status');
+      }
+      
+      return classes.join(' ');
+    }
+    function toggleRow(element) {
+      const hiddenRow = element.nextElementSibling;
+      hiddenRow.classList.toggle('active');
+      
+      // Opcional: cerrar otras filas expandidas
+      const allHiddenRows = document.querySelectorAll('.bodyRowHidden.active');
+      allHiddenRows.forEach(row => {
+        if (row !== hiddenRow) {
+          row.classList.remove('active');
+        }
+      });
+    }
+
+    // Evitar que el click en el formulario propague al row
+    document.querySelectorAll('form').forEach(form => {
+      form.addEventListener('click', (e) => e.stopPropagation());
+    });
+    </script>
 </body>
 </html>

@@ -27,49 +27,90 @@
   </script>
 </head>
 <body>
-  <h1>Formulario de Cliente</h1>
-  <% if (alertMessage) { %>
-    <script>alert('<%= alertMessage %>');</script>
-    <div class="alert">
-      <%= alertMessage %>
-    </div>
-  <% } %>
-  
-  <form action="/form/verify" method="POST">
-    <label for="dni">DNI:</label>
-    <input type="text" name="dni" required placeholder="Ingrese el DNI" value="<%= clientData ? clientData.dni : '' %>" />
-    <button type="submit">Buscar</button>
-  </form>
-
-  <% if (clientData || alertMessage) { %>
-    <form action="/form/save" method="POST">
-      <label for="nombre">Nombre:</label>
-      <input type="text" name="nombre" value="<%= clientData ? clientData.nombre : '' %>" required />
-      <label for="dni">DNI:</label>
-      <input type="text" name="dni" value="<%= clientData ? clientData.dni : '' %>" required />
-      <label for="telefono">Teléfono:</label>
-      <input type="text" name="telefono" value="<%= clientData ? clientData.telefono : '' %>" />
-      <label for="email">Email:</label>
-      <input type="email" name="email" value="<%= clientData ? clientData.email : '' %>" />
-      <label for="sucursal">Sucursal:</label>
-      <input type="text" name="sucursal" value="<%= clientData ? clientData.sucursal : '' %>" />
-      <label for="obra_social">Obra Social:</label>
-      <input type="text" name="obra_social" value="<%= clientData ? clientData.obra_social : '' %>" />
-      <label for="observaciones">Observaciones:</label>
-      <textarea name="observaciones"><%= clientData ? clientData.observaciones : '' %></textarea>
-      <label for="cronico">¿Es crónico?</label>
-      <input type="checkbox" name="cronico" onchange="toggleCrónicoFields(this.checked)" />
-      <div id="crónico-fields" style="display: none;">
-        <h3>Información para registro:</h3>
-        <label for="grupo">Grupo:</label>
-        <input type="text" name="grupo" />
-        <label for="productos">Productos:</label>
-        <textarea name="productos"></textarea>
-        <label for="fecha_alerta">Fecha de Alerta:</label>
-        <input type="date" name="fecha_alerta" />
+  <div class="form-container">
+    <h1>Formulario de Cliente</h1>
+    
+    <% if (alertMessage) { %>
+      <div class="alert <%= alertMessage.includes('error') ? 'error' : 'success' %>">
+        <%= alertMessage %>
       </div>
-      <button type="submit">Guardar</button>
+    <% } %>
+    
+    <form action="/form/verify" method="POST" class="search-form">
+      <div class="form-group">
+        <label for="dni">DNI:</label>
+        <input type="text" name="dni" required placeholder="Ingrese el DNI" value="<%= clientData ? clientData.dni : '' %>" />
+      </div>
+      <button type="submit">Buscar</button>
     </form>
-  <% } %>
+
+    <% if (clientData || alertMessage) { %>
+      <form action="/form/save" method="POST">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="nombre">Nombre:</label>
+            <input type="text" name="nombre" value="<%= clientData ? clientData.nombre : '' %>" required />
+          </div>
+          
+          <div class="form-group">
+            <label for="dni">DNI:</label>
+            <input type="text" name="dni" value="<%= clientData ? clientData.dni : '' %>" required />
+          </div>
+          
+          <div class="form-group">
+            <label for="telefono">Teléfono:</label>
+            <input type="text" name="telefono" value="<%= clientData ? clientData.telefono : '' %>" />
+          </div>
+          
+          <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" name="email" value="<%= clientData ? clientData.email : '' %>" />
+          </div>
+          
+          <div class="form-group">
+            <label for="sucursal">Sucursal:</label>
+            <input type="text" name="sucursal" value="<%= clientData ? clientData.sucursal : '' %>" />
+          </div>
+          
+          <div class="form-group">
+            <label for="obra_social">Obra Social:</label>
+            <input type="text" name="obra_social" value="<%= clientData ? clientData.obra_social : '' %>" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="observaciones">Observaciones:</label>
+          <textarea name="observaciones"><%= clientData ? clientData.observaciones : '' %></textarea>
+        </div>
+
+        <div class="checkbox-group">
+          <label for="cronico">¿Es crónico?</label>
+          <input type="checkbox" name="cronico" onchange="toggleCrónicoFields(this.checked)" />
+        </div>
+
+        <div id="crónico-fields">
+          <h3>Información para registro:</h3>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="grupo">Grupo:</label>
+              <input type="text" name="grupo" />
+            </div>
+            
+            <div class="form-group">
+              <label for="fecha_alerta">Fecha de Alerta:</label>
+              <input type="date" name="fecha_alerta" />
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="productos">Productos:</label>
+            <textarea name="productos"></textarea>
+          </div>
+        </div>
+
+        <button type="submit">Guardar</button>
+      </form>
+    <% } %>
+  </div>
 </body>
 </html>
